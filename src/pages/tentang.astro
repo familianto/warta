@@ -4,15 +4,6 @@ import Base from "../layouts/Base.astro";
 
 <Base title="Tentang — Warta">
   <div class="container">
-    <header class="header">
-      <a href={`${import.meta.env.BASE_URL}`} class="logo">Warta</a>
-      <nav class="nav">
-        <a href={`${import.meta.env.BASE_URL}`} class="nav-link">Home</a>
-        <a href={`${import.meta.env.BASE_URL}peta/`} class="nav-link">Peta Pikiran</a>
-        <a href={`${import.meta.env.BASE_URL}tentang/`} class="nav-link active">Tentang</a>
-      </nav>
-    </header>
-
     <main class="main">
       <h1>Tentang</h1>
       <p class="coming-soon">Coming soon</p>
@@ -24,40 +15,7 @@ import Base from "../layouts/Base.astro";
   .container {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 3rem;
-  }
-
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-text);
-    text-decoration: none;
-  }
-
-  .nav {
-    display: flex;
-    gap: 1.5rem;
-  }
-
-  .nav-link {
-    color: var(--color-text-secondary);
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-
-  .nav-link.active,
-  .nav-link:hover {
-    color: var(--color-text);
-    text-decoration: none;
+    padding: 0 1.5rem;
   }
 
   h1 {
