@@ -57,6 +57,22 @@ export default function MindMap({ nodes, edges }) {
     const simNodes = nodes.map((n) => ({ ...n }));
     const simEdges = edges.map((e) => ({ ...e }));
 
+    // Compute curve offsets for parallel edges between same node pair
+    const pairCount = {};
+    simEdges.forEach((e) => {
+      const key = [e.source, e.target].sort().join(":::");
+      pairCount[key] = (pairCount[key] || 0) + 1;
+    });
+    const pairIndex = {};
+    simEdges.forEach((e) => {
+      const key = [e.source, e.target].sort().join(":::");
+      pairIndex[key] = (pairIndex[key] || 0) + 1;
+      const total = pairCount[key];
+      const idx = pairIndex[key];
+      // Spread offsets symmetrically: -1, 0, 1 for 3 edges; -0.5, 0.5 for 2, etc.
+      e._curveOffset = total === 1 ? 0 : ((idx - 1) / (total - 1) - 0.5) * 2;
+    });
+
     // Force simulation
     const simulation = d3
       .forceSimulation(simNodes)
@@ -103,8 +119,11 @@ export default function MindMap({ nodes, edges }) {
       .data(simEdges)
       .join("g");
 
+    const CURVE_STRENGTH = 50;
+
     const lines = edgeGroup
-      .append("line")
+      .append("path")
+      .attr("fill", "none")
       .attr("stroke", (d) => (d.type === "manual" ? "#888" : "#ccc"))
       .attr("stroke-width", (d) => (d.type === "manual" ? 2 : 1.5))
       .attr("stroke-dasharray", (d) => (d.type === "manual" ? "none" : "5,5"))
@@ -118,6 +137,19 @@ export default function MindMap({ nodes, edges }) {
       .attr("font-size", "10px")
       .attr("fill", "var(--color-text-secondary, #6b7280)")
       .attr("class", "edge-label");
+
+    // Helper: compute curved path control point
+    function getCurvePoint(d) {
+      const sx = d.source.x, sy = d.source.y;
+      const tx = d.target.x, ty = d.target.y;
+      const mx = (sx + tx) / 2, my = (sy + ty) / 2;
+      const dx = tx - sx, dy = ty - sy;
+      const len = Math.sqrt(dx * dx + dy * dy) || 1;
+      // Perpendicular offset
+      const offset = d._curveOffset * CURVE_STRENGTH;
+      const nx = -dy / len, ny = dx / len;
+      return { cx: mx + nx * offset, cy: my + ny * offset };
+    }
 
     // Nodes
     const nodeGroup = g
@@ -223,15 +255,14 @@ export default function MindMap({ nodes, edges }) {
 
     // Tick
     simulation.on("tick", () => {
-      lines
-        .attr("x1", (d) => d.source.x)
-        .attr("y1", (d) => d.source.y)
-        .attr("x2", (d) => d.target.x)
-        .attr("y2", (d) => d.target.y);
+      lines.attr("d", (d) => {
+        const { cx, cy } = getCurvePoint(d);
+        return `M${d.source.x},${d.source.y} Q${cx},${cy} ${d.target.x},${d.target.y}`;
+      });
 
       edgeLabels
-        .attr("x", (d) => (d.source.x + d.target.x) / 2)
-        .attr("y", (d) => (d.source.y + d.target.y) / 2);
+        .attr("x", (d) => getCurvePoint(d).cx)
+        .attr("y", (d) => getCurvePoint(d).cy);
 
       nodeGroup.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
