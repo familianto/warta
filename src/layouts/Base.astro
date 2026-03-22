@@ -5,6 +5,21 @@ interface Props {
 }
 
 const { title, description = "Warta — platform blog personal" } = Astro.props;
+const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+
+function isActive(path: string): boolean {
+  if (path === base) {
+    return currentPath === base || currentPath === base.replace(/\/$/, "");
+  }
+  return currentPath.startsWith(path);
+}
+
+const navLinks = [
+  { href: base, label: "Home" },
+  { href: `${base}peta/`, label: "Peta Pikiran" },
+  { href: `${base}tentang/`, label: "Tentang" },
+];
 ---
 
 <!doctype html>
@@ -13,20 +28,152 @@ const { title, description = "Warta — platform blog personal" } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <title>{title}</title>
   </head>
   <body>
-    <slot />
+    <div class="site-wrapper">
+      <header class="site-header">
+        <div class="header-inner">
+          <a href={base} class="logo">Warta</a>
+          <nav class="nav">
+            {navLinks.map((link) => (
+              <a
+                href={link.href}
+                class:list={["nav-link", { active: isActive(link.href) }]}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      <div class="site-content">
+        <slot />
+      </div>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <p>Dibuat dengan <a href="https://astro.build" target="_blank" rel="noopener">Astro</a> &copy; {new Date().getFullYear()}</p>
+          <a href="https://github.com/familianto/warta" target="_blank" rel="noopener" class="footer-github">GitHub</a>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>
 
 <style is:global>
   @import "../styles/global.css";
+</style>
+
+<style>
+  .site-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .logo:hover {
+    text-decoration: none;
+  }
+
+  .nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .nav-link.active {
+    color: var(--color-text);
+  }
+
+  .site-content {
+    flex: 1;
+    padding-top: 2rem;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    margin-top: 2rem;
+  }
+
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+  }
+
+  .footer-inner a {
+    color: var(--color-text-secondary);
+  }
+
+  .footer-inner a:hover {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .footer-github {
+    font-weight: 500;
+  }
+
+  @media (max-width: 480px) {
+    .header-inner {
+      flex-direction: column;
+      gap: 0.75rem;
+      text-align: center;
+    }
+
+    .nav {
+      gap: 1rem;
+    }
+
+    .footer-inner {
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: center;
+    }
+  }
 </style>

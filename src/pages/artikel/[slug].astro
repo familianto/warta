@@ -1,28 +1,76 @@
 ---
 import Base from "../../layouts/Base.astro";
+import { getArticle, getAllSlugs, getArticleList } from "../../lib/articles";
+import type { Article } from "../../lib/articles";
 
 export function getStaticPaths() {
-  return [{ params: { slug: "placeholder" } }];
+  const slugs = getAllSlugs();
+  return slugs.map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
+const article = getArticle(slug!);
+
+if (!article) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+
+const allArticles = getArticleList();
+const relatedArticles = article.relatedSlugs
+  .map((rs) => allArticles.find((a) => a.slug === rs))
+  .filter(Boolean);
+
+function formatDate(iso: string): string {
+  const date = new Date(iso);
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 ---
 
-<Base title={`Artikel — Warta`}>
+<Base title={`${article.title} — Warta`} description={article.subtitle}>
   <div class="container">
-    <header class="header">
-      <a href={`${import.meta.env.BASE_URL}`} class="logo">Warta</a>
-      <nav class="nav">
-        <a href={`${import.meta.env.BASE_URL}`} class="nav-link">Home</a>
-        <a href={`${import.meta.env.BASE_URL}peta/`} class="nav-link">Peta Pikiran</a>
-        <a href={`${import.meta.env.BASE_URL}tentang/`} class="nav-link">Tentang</a>
-      </nav>
-    </header>
+    <article class="article">
+      <header class="article-header">
+        <h1 class="article-title">{article.title}</h1>
+        {article.subtitle && <p class="article-subtitle">{article.subtitle}</p>}
+        <div class="article-info">
+          <span class="author">{article.author}</span>
+          <span class="separator">·</span>
+          <time datetime={article.createdAt}>{formatDate(article.createdAt)}</time>
+        </div>
+        <div class="article-tags">
+          {article.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </header>
 
-    <main class="main">
-      <h1>Artikel</h1>
-      <p class="coming-soon">Coming soon</p>
-    </main>
+      {article.coverImage && (
+        <img src={article.coverImage} alt={article.title} class="cover-image" />
+      )}
+
+      <div class="article-content" set:html={article.content} />
+
+      {relatedArticles.length > 0 && (
+        <aside class="related">
+          <h3 class="related-heading">Artikel Terkait</h3>
+          <ul class="related-list">
+            {relatedArticles.map((ra) => (
+              <li>
+                <a href={`${import.meta.env.BASE_URL}artikel/${ra!.slug}/`}>{ra!.title}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
+
+      <div class="back-link">
+        <a href={`${import.meta.env.BASE_URL}`}>&larr; Kembali ke beranda</a>
+      </div>
+    </article>
   </div>
 </Base>
 
@@ -30,48 +78,190 @@ const { slug } = Astro.params;
   .container {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 0 1.5rem 3rem;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 3rem;
+  .article-header {
+    margin-bottom: 2rem;
   }
 
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-text);
-    text-decoration: none;
+  .article-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
   }
 
-  .nav {
-    display: flex;
-    gap: 1.5rem;
-  }
-
-  .nav-link {
+  .article-subtitle {
+    font-size: 1.15rem;
     color: var(--color-text-secondary);
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-
-  .nav-link:hover {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-
-  h1 {
-    font-size: 2rem;
+    line-height: 1.6;
     margin-bottom: 1rem;
   }
 
-  .coming-soon {
+  .article-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
     color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .author {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .separator {
+    color: var(--color-text-secondary);
+  }
+
+  .article-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  .cover-image {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .article-content {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-text);
+  }
+
+  .article-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .article-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-content :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .article-content :global(blockquote) {
+    border-left: 3px solid var(--color-primary);
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    background-color: var(--color-surface);
+    border-radius: 0 6px 6px 0;
+    font-style: italic;
+    color: var(--color-text-secondary);
+  }
+
+  .article-content :global(blockquote p) {
+    margin-bottom: 0;
+  }
+
+  .article-content :global(code) {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 0.9em;
+    background-color: var(--color-surface);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .article-content :global(pre) {
+    background-color: var(--color-surface);
+    padding: 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    line-height: 1.6;
+  }
+
+  .article-content :global(pre code) {
+    background: none;
+    padding: 0;
+    font-size: 0.85rem;
+  }
+
+  .article-content :global(img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+
+  .article-content :global(strong) {
+    font-weight: 600;
+  }
+
+  .related {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .related-heading {
     font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .related-list a {
+    color: var(--color-primary);
+    font-size: 0.95rem;
+  }
+
+  .related-list a:hover {
+    text-decoration: underline;
+  }
+
+  .back-link {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .back-link a {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .back-link a:hover {
+    color: var(--color-text);
   }
 </style>
