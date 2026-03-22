@@ -28,9 +28,17 @@ function formatDate(iso: string): string {
     year: "numeric",
   });
 }
+
+function getReadingTime(html: string): number {
+  const text = html.replace(/<[^>]*>/g, "");
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+const readingTime = getReadingTime(article.content);
 ---
 
-<Base title={`${article.title} — Warta`} description={article.subtitle}>
+<Base title={`${article.title} — Warta`} description={article.subtitle} ogImage={article.coverImage} ogType="article">
   <div class="container">
     <article class="article">
       <header class="article-header">
@@ -40,6 +48,8 @@ function formatDate(iso: string): string {
           <span class="author">{article.author}</span>
           <span class="separator">·</span>
           <time datetime={article.createdAt}>{formatDate(article.createdAt)}</time>
+          <span class="separator">&middot;</span>
+          <span class="reading-time">{readingTime} menit baca</span>
         </div>
         <div class="article-tags">
           {article.tags.map((tag) => (
@@ -69,6 +79,7 @@ function formatDate(iso: string): string {
 
       <div class="back-link">
         <a href={`${import.meta.env.BASE_URL}`}>&larr; Kembali ke beranda</a>
+        <a href="#" class="back-to-top">&uarr; Kembali ke atas</a>
       </div>
     </article>
   </div>
@@ -261,7 +272,40 @@ function formatDate(iso: string): string {
     font-size: 0.9rem;
   }
 
+  .back-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .back-to-top {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .back-to-top:hover {
+    color: var(--color-text);
+  }
+
   .back-link a:hover {
     color: var(--color-text);
+  }
+
+  .reading-time {
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 0 1rem 2rem;
+    }
+
+    .article-title {
+      font-size: 1.6rem;
+    }
+
+    .article-content {
+      font-size: 1rem;
+    }
   }
 </style>
