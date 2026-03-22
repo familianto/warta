@@ -1,0 +1,15 @@
+{
+  "slug": "judul-artikel",
+  "title": "Judul Artikel",
+  "subtitle": "Subtitle Artikel",
+  "author": "Hopy Familianto",
+  "createdAt": "2026-03-22T06:31:30.127Z",
+  "updatedAt": "2026-03-22T06:31:30.127Z",
+  "tags": [
+    "trial"
+  ],
+  "relatedSlugs": [],
+  "coverImage": "",
+  "content": "<p>Mari kita mencoba menulis artikel</p>",
+  "published": false
+}
