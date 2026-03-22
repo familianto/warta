@@ -1,30 +1,23 @@
 ---
-import Base from "../../layouts/Base.astro";
+import config from "../../../site.config.json";
+import AdminPanel from "../../components/admin/AdminPanel.jsx";
 ---
 
-<Base title="Admin Panel — Warta">
-  <div class="container">
-    <main class="main">
-      <h1>Admin Panel</h1>
-      <p class="coming-soon">Coming soon</p>
-    </main>
-  </div>
-</Base>
-
-<style>
-  .container {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  .coming-soon {
-    color: var(--color-text-secondary);
-    font-size: 1.1rem;
-  }
-</style>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Kelola Warta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/warta/admin.css" />
+  </head>
+  <body>
+    <AdminPanel config={config} client:only="react" />
+  </body>
+</html>

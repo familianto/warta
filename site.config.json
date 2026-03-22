@@ -6,6 +6,7 @@
   "security": {
     "adminPath": "kelola-w8x6m",
     "allowedGoogleEmail": "",
+    "googleClientId": "343010297174-9440tco8mhnl6388eg9p166p21ec86sn.apps.googleusercontent.com",
     "sessionTimeoutMinutes": 30,
     "maxLoginAttempts": 3,
     "lockoutMinutes": 15
