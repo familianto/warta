@@ -1,30 +1,148 @@
 ---
 import Base from "../layouts/Base.astro";
+import { getMindMapData } from "../lib/mindmap";
+import MindMap from "../components/MindMap.jsx";
+
+const base = import.meta.env.BASE_URL;
+const graphData = getMindMapData(base);
 ---
 
-<Base title="Peta Pikiran — Warta">
+<Base title="Peta Pikiran — Warta" description="Visualisasi hubungan antar artikel berdasarkan tag dan relasi manual">
   <div class="container">
     <main class="main">
       <h1>Peta Pikiran</h1>
-      <p class="coming-soon">Coming soon</p>
+      <p class="description">Visualisasi hubungan antar artikel berdasarkan tag dan relasi manual. Klik node untuk membaca artikel, drag untuk memindahkan, scroll untuk zoom.</p>
+
+      <div class="mindmap-wrapper">
+        <MindMap
+          client:only="react"
+          nodes={graphData.nodes}
+          edges={graphData.edges}
+        />
+      </div>
+
+      <div class="legend">
+        <h3>Keterangan</h3>
+        <div class="legend-grid">
+          <div class="legend-section">
+            <h4>Warna Node (tag utama)</h4>
+            <div class="legend-items">
+              <div class="legend-item">
+                <span class="legend-circle" style="background:#378ADD"></span>
+                webdev
+              </div>
+              <div class="legend-item">
+                <span class="legend-circle" style="background:#1D9E75"></span>
+                tutorial
+              </div>
+              <div class="legend-item">
+                <span class="legend-circle" style="background:#7F77DD"></span>
+                menulis
+              </div>
+              <div class="legend-item">
+                <span class="legend-circle" style="background:#BA7517"></span>
+                produktivitas
+              </div>
+              <div class="legend-item">
+                <span class="legend-circle" style="background:#888780"></span>
+                lainnya
+              </div>
+            </div>
+          </div>
+          <div class="legend-section">
+            <h4>Tipe Garis</h4>
+            <div class="legend-items">
+              <div class="legend-item">
+                <svg width="40" height="12"><line x1="0" y1="6" x2="40" y2="6" stroke="#888" stroke-width="2"></line></svg>
+                Relasi manual
+              </div>
+              <div class="legend-item">
+                <svg width="40" height="12"><line x1="0" y1="6" x2="40" y2="6" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,5"></line></svg>
+                Tag yang sama
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 </Base>
 
 <style>
   .container {
-    max-width: var(--max-width);
+    max-width: 960px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1.5rem 3rem;
   }
 
   h1 {
     font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .mindmap-wrapper {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .legend {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .legend h3 {
+    font-size: 1rem;
     margin-bottom: 1rem;
   }
 
-  .coming-soon {
+  .legend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .legend-section h4 {
+    font-size: 0.85rem;
     color: var(--color-text-secondary);
-    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+  }
+
+  .legend-circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .legend-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
   }
 </style>
