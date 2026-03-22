@@ -4,6 +4,6 @@ import react from "@astrojs/react";
 export default defineConfig({
   output: "static",
   site: "https://familianto.github.io",
-  base: "/warta",
+  base: "/warta/",
   integrations: [react()],
 });
