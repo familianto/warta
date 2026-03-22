@@ -1,0 +1,66 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Warta">
+  <div class="container">
+    <header class="header">
+      <h1 class="logo">Warta</h1>
+      <nav class="nav">
+        <a href={`${import.meta.env.BASE_URL}`} class="nav-link active">Home</a>
+        <a href={`${import.meta.env.BASE_URL}peta/`} class="nav-link">Peta Pikiran</a>
+        <a href={`${import.meta.env.BASE_URL}tentang/`} class="nav-link">Tentang</a>
+      </nav>
+    </header>
+
+    <main class="main">
+      <p class="welcome">Selamat datang di Warta — platform blog personal</p>
+    </main>
+  </div>
+</Base>
+
+<style>
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 3rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .nav-link.active,
+  .nav-link:hover {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .welcome {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>
