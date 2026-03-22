@@ -1,0 +1,27 @@
+{
+  "siteName": "Warta",
+  "siteUrl": "https://familianto.github.io/warta",
+  "language": "id",
+  "authorName": "Hopy Familianto",
+  "security": {
+    "adminPath": "kelola-w8x6m",
+    "allowedGoogleEmail": "",
+    "sessionTimeoutMinutes": 30,
+    "maxLoginAttempts": 3,
+    "lockoutMinutes": 15
+  },
+  "github": {
+    "owner": "familianto",
+    "repo": "warta",
+    "contentBranch": "main",
+    "contentPath": "content"
+  },
+  "theme": {
+    "primaryColor": "#534AB7",
+    "fontFamily": "Inter"
+  },
+  "media": {
+    "preferredImageHost": "gdrive",
+    "youtubeEmbed": true
+  }
+}
