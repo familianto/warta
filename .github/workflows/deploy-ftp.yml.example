@@ -1,0 +1,59 @@
+# ============================================
+# GitHub Actions: Deploy Warta ke Hosting via FTP
+# ============================================
+# Workflow ini otomatis build dan upload hasil build
+# ke hosting tradisional via FTP setiap kali ada push ke main.
+#
+# CARA MENGAKTIFKAN:
+# 1. Rename file ini menjadi deploy-ftp.yml (hapus .example)
+# 2. Tambahkan FTP credentials sebagai GitHub Secrets:
+#    - FTP_SERVER  (contoh: ftp.namakamu.com)
+#    - FTP_USERNAME (contoh: user@namakamu.com)
+#    - FTP_PASSWORD (password FTP kamu)
+# 3. Push ke branch main
+#
+# CATATAN:
+# - Jika menggunakan workflow ini, nonaktifkan deploy.yml
+#   (GitHub Pages) agar tidak konflik. Rename deploy.yml
+#   menjadi deploy.yml.bak atau hapus.
+# - Pastikan astro.config.mjs sudah dikonfigurasi dengan
+#   site dan base yang benar untuk hosting sendiri.
+# ============================================
+
+name: Deploy ke Hosting (FTP)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Bisa trigger manual dari GitHub
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro site
+        run: npm run build
+
+      - name: Upload ke hosting via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /public_html/
+          # Hanya upload file yang berubah (lebih cepat)
+          state-name: .ftp-deploy-sync-state.json

@@ -55,6 +55,193 @@ Warta adalah platform blog personal yang menggabungkan penulisan artikel dengan 
 7. **Push ke branch `main`** untuk trigger deploy pertama
 8. **Mulai menulis** di `/[admin-path-kamu]/`
 
+## Deploy ke Hosting Sendiri
+
+Selain GitHub Pages, Warta bisa di-deploy ke hosting tradisional (shared hosting) seperti Niagahoster, Hostinger, idwebhost, atau provider lainnya.
+
+### Perbedaan dengan GitHub Pages
+
+| | GitHub Pages | Hosting Sendiri |
+|---|---|---|
+| **Deploy** | Otomatis setiap kali artikel disimpan via admin panel | Perlu build manual lalu upload, atau setup auto-deploy via FTP |
+| **Domain** | `username.github.io/repo` (subdirectory) | Domain sendiri langsung (`blog.namakamu.com`) |
+| **Biaya** | Gratis | Tergantung provider hosting |
+| **SSL** | Otomatis | Biasanya gratis via Let's Encrypt, perlu diaktifkan manual |
+
+### Langkah-langkah Deploy ke Hosting Sendiri
+
+#### Step 1 — Konfigurasi Domain
+
+Buka `astro.config.mjs` dan ubah `site` serta `base`:
+
+```javascript
+// SEBELUM (GitHub Pages):
+export default defineConfig({
+  output: "static",
+  site: "https://familianto.github.io",
+  base: "/warta/",
+  integrations: [react(), sitemap()],
+});
+
+// SESUDAH (hosting sendiri):
+export default defineConfig({
+  output: "static",
+  site: "https://blog.namakamu.com",
+  base: "/",
+  integrations: [react(), sitemap()],
+});
+```
+
+#### Step 2 — Update site.config.json
+
+```json
+{
+  "siteName": "Nama Blog Kamu",
+  "siteUrl": "https://blog.namakamu.com",
+  "authorName": "Nama Kamu",
+  "security": {
+    "adminPath": "admin-path-rahasia-kamu",
+    "googleClientId": "CLIENT_ID_DARI_GOOGLE_CONSOLE.apps.googleusercontent.com"
+  },
+  "github": {
+    "owner": "username-github-kamu",
+    "repo": "nama-repo-fork-kamu",
+    "contentBranch": "main",
+    "contentPath": "content"
+  }
+}
+```
+
+Jangan lupa ganti juga `public/logo_master.png` dengan logo sendiri (lihat bagian [Mengganti Logo](#mengganti-logo)).
+
+#### Step 3 — Setup Google OAuth
+
+1. Buka [Google Cloud Console](https://console.cloud.google.com/)
+2. Buat project baru (atau gunakan yang sudah ada)
+3. Buka **APIs & Services > Credentials**
+4. Klik **Create Credentials > OAuth Client ID**
+5. Pilih Application type: **Web application**
+6. Isi Authorized JavaScript origins:
+   ```
+   https://blog.namakamu.com
+   ```
+7. Isi Authorized redirect URIs:
+   ```
+   https://blog.namakamu.com/admin-path-rahasia-kamu/
+   ```
+8. Catat **Client ID**, masukkan ke `site.config.json` bagian `security.googleClientId`
+
+> **Penting:** Google OAuth **wajib HTTPS**. Pastikan SSL sudah aktif di hosting sebelum setup OAuth.
+
+#### Step 4 — Build Project
+
+Pastikan [Node.js](https://nodejs.org/) versi 22 atau lebih baru terinstall di komputer lokal.
+
+```bash
+# Install dependencies
+npm install
+
+# Build site
+npm run build
+```
+
+Hasil build ada di folder `dist/`. Folder ini berisi semua file HTML, CSS, JS, dan aset yang siap di-upload.
+
+#### Step 5 — Upload ke Hosting
+
+Menggunakan **File Manager** di panel hosting (cPanel/hPanel) atau **FTP client** seperti [FileZilla](https://filezilla-project.org/):
+
+1. Buka folder `dist/` di komputer lokal
+2. Upload **semua isi** folder `dist/` ke folder `public_html` di hosting
+
+> **Penting:** Upload **isi** folder `dist/`, bukan folder `dist/` itu sendiri. Struktur di `public_html` harus langsung berisi `index.html`, `favicon.svg`, folder `artikel/`, dll.
+
+Jika menggunakan hosting tradisional, rename file `.htaccess.example` (dari folder `public/`) menjadi `.htaccess` dan ikut upload ke `public_html` untuk mengaktifkan cache dan security headers.
+
+#### Step 6 — Konfigurasi Domain di Hosting
+
+1. Arahkan domain ke folder `public_html` (biasanya sudah default)
+2. Aktifkan **SSL/HTTPS** — biasanya gratis via Let's Encrypt di panel hosting
+3. Pastikan redirect HTTP → HTTPS aktif
+
+#### Step 7 — Test
+
+1. Buka domain di browser — homepage harus tampil
+2. Buka admin panel di `https://blog.namakamu.com/admin-path-rahasia-kamu/`
+3. Login dengan Google, masukkan GitHub token
+4. Coba buat artikel test, klik Simpan
+5. Artikel tersimpan ke repo GitHub — perlu build ulang dan upload ulang untuk melihat hasilnya di situs (lihat section auto-deploy di bawah)
+
+### Auto-Deploy untuk Hosting Sendiri
+
+Saat menggunakan hosting tradisional, artikel yang disimpan via admin panel masuk ke repo GitHub tapi belum otomatis muncul di situs. Ada dua cara menangani ini:
+
+#### Opsi 1 — Manual (paling sederhana)
+
+Setiap kali menyimpan artikel baru:
+
+```bash
+# Di komputer lokal
+git pull origin main
+npm run build
+# Upload isi dist/ ke hosting via FTP
+```
+
+Cocok jika jarang publish artikel (misalnya seminggu sekali).
+
+#### Opsi 2 — GitHub Actions + FTP Deploy (otomatis)
+
+Gunakan GitHub Actions untuk otomatis build dan upload ke hosting via FTP setiap kali ada push ke `main`.
+
+1. Rename file `.github/workflows/deploy-ftp.yml.example` menjadi `.github/workflows/deploy-ftp.yml`
+
+2. Tambahkan FTP credentials sebagai **GitHub Secrets**:
+   - Buka repository di GitHub
+   - Pergi ke **Settings > Secrets and variables > Actions**
+   - Klik **New repository secret**, tambahkan satu per satu:
+
+   | Nama Secret | Contoh Nilai | Keterangan |
+   |-------------|-------------|------------|
+   | `FTP_SERVER` | `ftp.namakamu.com` | Alamat FTP server dari hosting |
+   | `FTP_USERNAME` | `user@namakamu.com` | Username FTP |
+   | `FTP_PASSWORD` | `password-ftp-kamu` | Password FTP |
+
+   > Informasi FTP biasanya bisa ditemukan di panel hosting (cPanel > FTP Accounts, atau email dari provider hosting).
+
+3. Push perubahan ke `main` — GitHub Actions akan otomatis build dan upload ke hosting
+
+### Troubleshooting Hosting
+
+**"Halaman 404 saat refresh di URL artikel"**
+
+Astro menghasilkan file HTML statis per halaman, jadi masalah ini jarang terjadi. Tapi jika terjadi, buat file `.htaccess` di `public_html` dengan isi:
+
+```apache
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+```
+
+Atau rename `.htaccess.example` yang sudah disediakan di repository.
+
+**"Google OAuth error: redirect_uri_mismatch"**
+
+URL di Google Cloud Console harus **persis sama** dengan URL admin panel, termasuk trailing slash. Contoh:
+- Di Google Console: `https://blog.namakamu.com/admin-path/`
+- URL admin panel: `https://blog.namakamu.com/admin-path/`
+- Keduanya harus identik (perhatikan `/` di akhir)
+
+**"Mixed content warning"**
+
+Pastikan SSL sudah aktif dan **semua URL** di `site.config.json` serta `astro.config.mjs` menggunakan `https://` (bukan `http://`).
+
+**"File terlalu besar untuk upload via File Manager"**
+
+Gunakan FTP client (FileZilla) daripada file manager di panel hosting. Atau compress folder `dist/` menjadi `.zip`, upload, lalu extract di hosting via File Manager.
+
 ## Menjalankan Secara Lokal
 
 ```bash
