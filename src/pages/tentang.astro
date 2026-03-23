@@ -2,11 +2,32 @@
 import Base from "../layouts/Base.astro";
 ---
 
-<Base title="Tentang — Warta">
+<Base title="Tentang Warta — Warta" description="Tentang Warta — platform blog personal dengan visualisasi mind map">
   <div class="container">
     <main class="main">
-      <h1>Tentang</h1>
-      <p class="coming-soon">Coming soon</p>
+      <h1>Tentang Warta</h1>
+
+      <p>
+        Warta adalah platform blog personal dengan visualisasi mind map yang menghubungkan
+        antar artikel berdasarkan tag dan relasi manual. Setiap tulisan tidak berdiri sendiri —
+        mereka saling terhubung membentuk jaringan ide yang bisa dieksplorasi secara visual.
+      </p>
+
+      <p>
+        Dibangun dengan <a href="https://astro.build" target="_blank" rel="noopener">Astro</a>,
+        <a href="https://react.dev" target="_blank" rel="noopener">React</a>, dan
+        <a href="https://d3js.org" target="_blank" rel="noopener">D3.js</a>, lalu di-host gratis
+        di <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>.
+        Semua konten disimpan sebagai file JSON di repository GitHub — tanpa database, tanpa server.
+      </p>
+
+      <p>
+        Platform ini open source dan bisa digunakan siapa saja. Kunjungi repository GitHub untuk
+        mempelajari lebih lanjut atau fork untuk membuat blog kamu sendiri:
+        <a href="https://github.com/familianto/warta" target="_blank" rel="noopener">github.com/familianto/warta</a>
+      </p>
+
+      <p>Dibuat oleh <strong>Hopy Familianto</strong>.</p>
     </main>
   </div>
 </Base>
@@ -15,16 +36,28 @@ import Base from "../layouts/Base.astro";
   .container {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1.5rem 3rem;
   }
 
   h1 {
     font-size: 2rem;
-    margin-bottom: 1rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
   }
 
-  .coming-soon {
-    color: var(--color-text-secondary);
-    font-size: 1.1rem;
+  p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+    color: var(--color-text);
+  }
+
+  p a {
+    color: var(--color-primary);
+  }
+
+  p a:hover {
+    text-decoration: underline;
   }
 </style>

@@ -12,6 +12,7 @@ const graphData = getMindMapData(base);
     <main class="main">
       <h1>Peta Pikiran</h1>
       <p class="description">Visualisasi hubungan antar artikel berdasarkan tag dan relasi manual. Klik node untuk membaca artikel, drag untuk memindahkan, scroll untuk zoom.</p>
+      <p class="mobile-hint">Di perangkat mobile: gunakan pinch to zoom dan drag dengan satu jari untuk menjelajah.</p>
 
       <div class="mindmap-wrapper">
         <MindMap
@@ -137,6 +138,22 @@ const graphData = getMindMapData(base);
     height: 12px;
     border-radius: 50%;
     flex-shrink: 0;
+  }
+
+  .mobile-hint {
+    display: none;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-surface);
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-hint {
+      display: block;
+    }
   }
 
   @media (max-width: 480px) {

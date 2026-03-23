@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /warta/kelola-w8x6m/
+
+Sitemap: https://familianto.github.io/warta/sitemap-index.xml

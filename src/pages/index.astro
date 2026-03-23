@@ -159,4 +159,20 @@ function formatDate(iso: string): string {
     color: var(--color-text-secondary);
     font-weight: 500;
   }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 0 1rem 2rem;
+    }
+
+    .article-title {
+      font-size: 1.15rem;
+    }
+
+    .mindmap-cta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
 </style>

@@ -2,11 +2,16 @@
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
+  ogType?: string;
 }
 
-const { title, description = "Warta — platform blog personal" } = Astro.props;
+const { title, description = "Warta — platform blog personal", ogImage, ogType = "website" } = Astro.props;
 const currentPath = Astro.url.pathname;
 const base = import.meta.env.BASE_URL;
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://familianto.github.io";
+const canonicalUrl = `${siteUrl}${currentPath}`;
+const resolvedOgImage = ogImage ?? `${siteUrl}${base}logo_master.png`;
 
 function isActive(path: string): boolean {
   if (path === base) {
@@ -28,6 +33,19 @@ const navLinks = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalUrl} />
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content={ogType} />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -170,6 +188,7 @@ const navLinks = [
       flex-direction: column;
       gap: 0.75rem;
       text-align: center;
+      padding: 1rem;
     }
 
     .logo-img {
@@ -178,12 +197,23 @@ const navLinks = [
 
     .nav {
       gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-link {
+      font-size: 0.9rem;
+    }
+
+    .site-content {
+      padding-top: 1.25rem;
     }
 
     .footer-inner {
       flex-direction: column;
       gap: 0.5rem;
       text-align: center;
+      padding: 1rem;
     }
   }
 </style>
