@@ -1,7 +1,7 @@
 [
   {
     "slug": "sabar-itu-bukan-diam-ia-butuh-ilmu",
-    "title": "Sabar Itu Bukan Diam — Ia Butuh Ilmu",
+    "title": "Sabar Itu Bukan Diam â Ia Butuh Ilmu",
     "subtitle": "Kita sering mengira sabar adalah menahan diri. Tapi bagaimana kalau sebenarnya, sabar yang sesungguhnya justru tidak bisa hadir tanpa pengetahuan?",
     "tags": [
       "refleksi diri"
@@ -18,6 +18,18 @@
       "produktivitas"
     ],
     "createdAt": "2026-03-20T14:00:00Z",
+    "published": true
+  },
+  {
+    "slug": "membangun-blog-dengan-github-pages",
+    "title": "Membangun Blog dengan GitHub Pages: Hosting Gratis untuk Developer",
+    "subtitle": "Panduan lengkap cara kerja GitHub Pages dan kenapa ini jadi pilihan terbaik untuk hosting blog statis.",
+    "tags": [
+      "webdev",
+      "github",
+      "tutorial"
+    ],
+    "createdAt": "2026-03-15T10:30:00Z",
     "published": true
   },
   {
