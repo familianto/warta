@@ -1,47 +1,12 @@
 [
   {
     "slug": "sabar-itu-bukan-diam-ia-butuh-ilmu",
-    "title": "Sabar Itu Bukan Diam â Ia Butuh Ilmu",
+    "title": "Sabar Itu Bukan Diam — Ia Butuh Ilmu",
     "subtitle": "Kita sering mengira sabar adalah menahan diri. Tapi bagaimana kalau sebenarnya, sabar yang sesungguhnya justru tidak bisa hadir tanpa pengetahuan?",
     "tags": [
       "refleksi diri"
     ],
     "createdAt": "2026-03-24T01:17:32.656Z",
-    "published": true
-  },
-  {
-    "slug": "menulis-efektif-di-era-digital",
-    "title": "Menulis Efektif di Era Digital: Tips untuk Penulis Modern",
-    "subtitle": "Bagaimana cara menulis artikel yang menarik, mudah dibaca, dan berdampak di tengah lautan konten digital.",
-    "tags": [
-      "menulis",
-      "produktivitas"
-    ],
-    "createdAt": "2026-03-20T14:00:00Z",
-    "published": true
-  },
-  {
-    "slug": "membangun-blog-dengan-github-pages",
-    "title": "Membangun Blog dengan GitHub Pages: Hosting Gratis untuk Developer",
-    "subtitle": "Panduan lengkap cara kerja GitHub Pages dan kenapa ini jadi pilihan terbaik untuk hosting blog statis.",
-    "tags": [
-      "webdev",
-      "github",
-      "tutorial"
-    ],
-    "createdAt": "2026-03-15T10:30:00Z",
-    "published": true
-  },
-  {
-    "slug": "mengenal-astro-framework",
-    "title": "Mengenal Astro Framework: Masa Depan Web yang Lebih Cepat",
-    "subtitle": "Apa itu Astro, apa kelebihannya, dan kenapa framework ini sangat cocok untuk membangun blog modern.",
-    "tags": [
-      "webdev",
-      "astro",
-      "tutorial"
-    ],
-    "createdAt": "2026-03-10T08:00:00Z",
     "published": true
   }
 ]
