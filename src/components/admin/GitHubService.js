@@ -117,18 +117,23 @@ export async function deleteArticle(slug) {
   const path = `${_config.contentPath}/articles/${slug}.json`;
   const url = repoUrl(path);
 
-  // Step 1: Delete the article file with retry
-  await withRetry(async () => {
-    const sha = await fetchSha(url);
-    return apiRequest(url, {
-      method: "DELETE",
-      body: JSON.stringify({
-        message: `artikel: hapus ${slug}`,
-        sha,
-        branch: _config.contentBranch,
-      }),
+  // Delete the article file with retry; treat 404 as already deleted
+  try {
+    await withRetry(async () => {
+      const sha = await fetchSha(url);
+      return apiRequest(url, {
+        method: "DELETE",
+        body: JSON.stringify({
+          message: `artikel: hapus ${slug}`,
+          sha,
+          branch: _config.contentBranch,
+        }),
+      });
     });
-  });
+  } catch (err) {
+    if (!err.message.includes("Not Found")) throw err;
+    // File already gone, continue to index update
+  }
 }
 
 export async function updateIndex(indexData) {
