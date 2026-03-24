@@ -31,6 +31,34 @@ async function apiRequest(url, options = {}) {
   return res.json();
 }
 
+function encodeContent(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function decodeContent(base64) {
+  return decodeURIComponent(escape(atob(base64.replace(/\n/g, ""))));
+}
+
+async function fetchSha(url) {
+  const data = await apiRequest(url + `?ref=${_config.contentBranch}`);
+  return data.sha;
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function withRetry(fn, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      await delay(1000);
+    }
+  }
+}
+
 export function setToken(token) {
   _token = token;
 }
@@ -48,7 +76,7 @@ export async function getArticleList() {
     repoUrl(`${_config.contentPath}/index.json`) +
     `?ref=${_config.contentBranch}`;
   const data = await apiRequest(url);
-  const content = atob(data.content.replace(/\n/g, ""));
+  const content = decodeContent(data.content);
   return { articles: JSON.parse(content), sha: data.sha };
 }
 
@@ -57,73 +85,67 @@ export async function getArticle(slug) {
     repoUrl(`${_config.contentPath}/articles/${slug}.json`) +
     `?ref=${_config.contentBranch}`;
   const data = await apiRequest(url);
-  const content = atob(data.content.replace(/\n/g, ""));
+  const content = decodeContent(data.content);
   return { article: JSON.parse(content), sha: data.sha };
 }
 
 export async function saveArticle(slug, articleData) {
   const path = `${_config.contentPath}/articles/${slug}.json`;
   const url = repoUrl(path);
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(articleData, null, 2))));
+  const content = encodeContent(JSON.stringify(articleData, null, 2));
 
-  // Try to get existing file SHA
-  let sha;
-  try {
-    const existing = await apiRequest(
-      url + `?ref=${_config.contentBranch}`
-    );
-    sha = existing.sha;
-  } catch {
-    // File doesn't exist yet, that's fine
-  }
+  return withRetry(async () => {
+    let sha;
+    try {
+      sha = await fetchSha(url);
+    } catch {
+      // File doesn't exist yet, that's fine
+    }
 
-  const body = {
-    message: `artikel: ${sha ? "update" : "tambah"} ${articleData.title}`,
-    content,
-    branch: _config.contentBranch,
-  };
-  if (sha) body.sha = sha;
+    const body = {
+      message: `artikel: ${sha ? "update" : "tambah"} ${articleData.title}`,
+      content,
+      branch: _config.contentBranch,
+    };
+    if (sha) body.sha = sha;
 
-  return apiRequest(url, { method: "PUT", body: JSON.stringify(body) });
+    return apiRequest(url, { method: "PUT", body: JSON.stringify(body) });
+  });
 }
 
 export async function deleteArticle(slug) {
   const path = `${_config.contentPath}/articles/${slug}.json`;
   const url = repoUrl(path);
 
-  // Get current SHA
-  const existing = await apiRequest(
-    url + `?ref=${_config.contentBranch}`
-  );
-
-  return apiRequest(url, {
-    method: "DELETE",
-    body: JSON.stringify({
-      message: `artikel: hapus ${slug}`,
-      sha: existing.sha,
-      branch: _config.contentBranch,
-    }),
+  // Step 1: Delete the article file with retry
+  await withRetry(async () => {
+    const sha = await fetchSha(url);
+    return apiRequest(url, {
+      method: "DELETE",
+      body: JSON.stringify({
+        message: `artikel: hapus ${slug}`,
+        sha,
+        branch: _config.contentBranch,
+      }),
+    });
   });
 }
 
 export async function updateIndex(indexData) {
   const path = `${_config.contentPath}/index.json`;
   const url = repoUrl(path);
+  const content = encodeContent(JSON.stringify(indexData, null, 2));
 
-  // Get current SHA
-  const existing = await apiRequest(
-    url + `?ref=${_config.contentBranch}`
-  );
-
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(indexData, null, 2))));
-
-  return apiRequest(url, {
-    method: "PUT",
-    body: JSON.stringify({
-      message: "artikel: update index",
-      content,
-      sha: existing.sha,
-      branch: _config.contentBranch,
-    }),
+  return withRetry(async () => {
+    const sha = await fetchSha(url);
+    return apiRequest(url, {
+      method: "PUT",
+      body: JSON.stringify({
+        message: "artikel: update index",
+        content,
+        sha,
+        branch: _config.contentBranch,
+      }),
+    });
   });
 }
