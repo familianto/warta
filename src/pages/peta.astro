@@ -5,6 +5,24 @@ import MindMap from "../components/MindMap.jsx";
 
 const base = import.meta.env.BASE_URL;
 const graphData = getMindMapData(base);
+
+const COLOR_PALETTE = [
+  "#378ADD", "#1D9E75", "#7F77DD", "#BA7517", "#D94F4F",
+  "#2DB5A0", "#C75DAB", "#5B8C3E", "#D4822D", "#6A6ADB",
+];
+const DEFAULT_COLOR = "#888780";
+
+// Derive unique tags from actual article data
+const uniqueTags: string[] = [];
+for (const node of graphData.nodes) {
+  for (const tag of node.tags) {
+    if (!uniqueTags.includes(tag)) uniqueTags.push(tag);
+  }
+}
+const tagColorMap: Record<string, string> = {};
+uniqueTags.forEach((tag, i) => {
+  tagColorMap[tag] = COLOR_PALETTE[i % COLOR_PALETTE.length];
+});
 ---
 
 <Base title="Peta Pikiran — Warta" description="Visualisasi hubungan antar artikel berdasarkan tag dan relasi manual">
@@ -28,24 +46,14 @@ const graphData = getMindMapData(base);
           <div class="legend-section">
             <h4>Warna Node (tag utama)</h4>
             <div class="legend-items">
+              {uniqueTags.map((tag) => (
+                <div class="legend-item">
+                  <span class="legend-circle" style={`background:${tagColorMap[tag]}`}></span>
+                  {tag}
+                </div>
+              ))}
               <div class="legend-item">
-                <span class="legend-circle" style="background:#378ADD"></span>
-                webdev
-              </div>
-              <div class="legend-item">
-                <span class="legend-circle" style="background:#1D9E75"></span>
-                tutorial
-              </div>
-              <div class="legend-item">
-                <span class="legend-circle" style="background:#7F77DD"></span>
-                menulis
-              </div>
-              <div class="legend-item">
-                <span class="legend-circle" style="background:#BA7517"></span>
-                produktivitas
-              </div>
-              <div class="legend-item">
-                <span class="legend-circle" style="background:#888780"></span>
+                <span class="legend-circle" style={`background:${DEFAULT_COLOR}`}></span>
                 lainnya
               </div>
             </div>

@@ -1,23 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
-const TAG_COLORS = {
-  webdev: "#378ADD",
-  tutorial: "#1D9E75",
-  menulis: "#7F77DD",
-  produktivitas: "#BA7517",
-};
+const COLOR_PALETTE = [
+  "#378ADD", "#1D9E75", "#7F77DD", "#BA7517", "#D94F4F",
+  "#2DB5A0", "#C75DAB", "#5B8C3E", "#D4822D", "#6A6ADB",
+];
 const DEFAULT_COLOR = "#888780";
 
-function getNodeColor(tags) {
+function buildTagColorMap(nodes) {
+  const tags = [];
+  for (const node of nodes) {
+    for (const tag of node.tags || []) {
+      if (!tags.includes(tag)) tags.push(tag);
+    }
+  }
+  const map = {};
+  tags.forEach((tag, i) => {
+    map[tag] = COLOR_PALETTE[i % COLOR_PALETTE.length];
+  });
+  return map;
+}
+
+function getNodeColor(tags, tagColors) {
   if (!tags || tags.length === 0) return DEFAULT_COLOR;
-  return TAG_COLORS[tags[0]] || DEFAULT_COLOR;
+  return tagColors[tags[0]] || DEFAULT_COLOR;
 }
 
 export default function MindMap({ nodes, edges }) {
   const svgRef = useRef(null);
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
+  const tagColors = buildTagColorMap(nodes || []);
 
   // Track dimensions
   useEffect(() => {
@@ -186,7 +199,7 @@ export default function MindMap({ nodes, edges }) {
         const count = connectionCount[d.id] || 0;
         return 10 + count * 4;
       })
-      .attr("fill", (d) => getNodeColor(d.tags))
+      .attr("fill", (d) => getNodeColor(d.tags, tagColors))
       .attr("stroke", "var(--color-bg, #ffffff)")
       .attr("stroke-width", 2)
       .attr("class", "node-circle");
