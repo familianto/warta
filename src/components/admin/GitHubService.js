@@ -40,7 +40,9 @@ function decodeContent(base64) {
 }
 
 async function fetchSha(url) {
-  const data = await apiRequest(url + `?ref=${_config.contentBranch}`);
+  const data = await apiRequest(
+    url + `?ref=${_config.contentBranch}&t=${Date.now()}`
+  );
   return data.sha;
 }
 
@@ -48,13 +50,15 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function withRetry(fn, maxRetries = 3) {
+async function withRetry(fn, maxRetries = 5) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (err) {
-      if (attempt === maxRetries) throw err;
-      await delay(1000);
+      const isShaConflict =
+        err.message && err.message.includes("does not match");
+      if (!isShaConflict || attempt === maxRetries) throw err;
+      await delay(1000 * attempt);
     }
   }
 }
