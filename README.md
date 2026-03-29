@@ -2,7 +2,7 @@
 
 ![Astro](https://img.shields.io/badge/Astro-6.0-BC52EE?logo=astro&logoColor=white)
 ![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-live-222?logo=github&logoColor=white)
-![License](https://img.shields.io/badge/License-GPL--3.0-blue)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
 Warta adalah platform blog personal yang menggabungkan penulisan artikel dengan visualisasi peta pikiran (mind map). Setiap artikel saling terhubung melalui tag dan relasi manual, membentuk jaringan ide yang bisa dieksplorasi secara visual.
 
@@ -409,4 +409,4 @@ Tanpa ketiga kredensial ini, tidak ada yang bisa mengakses atau memodifikasi kon
 
 ## Lisensi
 
-[GNU General Public License v3.0](LICENSE)
+[MIT License](LICENSE)
