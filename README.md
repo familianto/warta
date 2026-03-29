@@ -27,6 +27,82 @@ Warta adalah platform blog personal yang menggabungkan penulisan artikel dengan 
 - 100% gratis — GitHub Pages hosting
 - Open source — fork dan gunakan sendiri
 
+## Arsitektur & Alur Kerja
+
+### Arsitektur Sistem
+
+```mermaid
+flowchart LR
+  subgraph Privat["🔒 Privat (hanya admin)"]
+    Admin["Admin Panel\n(Browser)"]
+    TipTap["TipTap Editor"]
+    OAuth["Google OAuth"]
+    Admin --- TipTap
+    Admin -- login --> OAuth
+  end
+
+  subgraph GH["GitHub"]
+    API["GitHub API"]
+    subgraph Repo["Repository"]
+      Src["Source code\n(src/)"]
+      Content["Konten artikel\n(content/articles/*.json)"]
+      Config["Konfigurasi\n(site.config.json)"]
+    end
+    Actions["GitHub Actions"]
+    Build["Astro Build"]
+    Pages["GitHub Pages"]
+    API -- baca/tulis --> Repo
+    Repo -- push ke main\ntrigger --> Actions
+    Actions -- npm run build --> Build
+    Build -- deploy --> Pages
+  end
+
+  subgraph Publik["🌐 Publik (pembaca)"]
+    Frontend["Frontend Publik"]
+    Artikel["Halaman Artikel"]
+    MindMap["Mind Map\n(D3.js)"]
+    Tentang["Halaman Tentang"]
+    Frontend --- Artikel
+    Frontend --- MindMap
+    Frontend --- Tentang
+  end
+
+  Admin -- CRUD artikel --> API
+  Pages -- serve --> Frontend
+  Pembaca(("👤 Pembaca")) -- akses --> Frontend
+```
+
+### Alur End-to-End (Login sampai Publish)
+
+```mermaid
+flowchart TD
+  Start([Buka halaman admin]) --> Login[Login dengan Google]
+  Login --> CekEmail{Email diizinkan?}
+  CekEmail -- Tidak --> Ditolak([Akses ditolak])
+  CekEmail -- Ya --> Token[/Masukkan GitHub\nPersonal Access Token/]
+  Token --> Pilih{Artikel Baru\natau Edit?}
+  Pilih -- Artikel Baru --> Isi[/Isi judul, subtitle, tag/]
+  Pilih -- Edit Artikel --> Load[Load artikel dari GitHub]
+  Isi --> Tulis[Tulis konten di TipTap Editor]
+  Load --> Tulis
+  Tulis --> Simpan[Klik Simpan]
+  Simpan --> Push[Admin panel push\nfile JSON ke GitHub via API]
+  Push --> Index[Admin panel update\nindex.json via API]
+  Index --> Actions[GitHub Actions\notomatis trigger build]
+  Actions --> Generate[Astro generate\nhalaman statis]
+  Generate --> Deploy[Deploy ke GitHub Pages]
+  Deploy --> Live([Artikel live di portal publik])
+
+  style Actions fill:#2ea043,color:#fff
+  style Generate fill:#2ea043,color:#fff
+  style Deploy fill:#2ea043,color:#fff
+  style Live fill:#2ea043,color:#fff
+```
+
+> **Catatan:** Langkah dari _GitHub Actions_ sampai _Artikel live_ (area hijau) terjadi otomatis, total sekitar 1-2 menit.
+
+Diagram di atas juga dapat dilihat dan diedit di [mermaid.live](https://mermaid.live) — cukup copy kode Mermaid-nya.
+
 ## Tech Stack
 
 | Teknologi | Fungsi |
