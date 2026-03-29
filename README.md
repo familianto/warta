@@ -10,9 +10,9 @@ Warta adalah platform blog personal yang menggabungkan penulisan artikel dengan 
 
 ## Screenshot
 
-<img src="https://drive.google.com/file/d/1MM5UcjySTtc2gvORmA3OdAhDqjf9A44z/view?usp=share_link">
+<img src="https://drive.google.com/file/d/1MM5UcjySTtc2gvORmA3OdAhDqjf9A44z/view">
 
-<img src="https://drive.google.com/file/d/13AhkI8u34I9Nt7lH14Runea_T2wNdNrR/view?usp=share_link">
+<img src="https://drive.google.com/file/d/13AhkI8u34I9Nt7lH14Runea_T2wNdNrR/view">
 
 ## Fitur Utama
 
