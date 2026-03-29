@@ -30,7 +30,7 @@ const articleModules = import.meta.glob<Article>("../../content/articles/*.json"
 
 export function getArticleList(): ArticleIndex[] {
   return (indexData as ArticleIndex[])
-    .filter((a) => a.published)
+    .filter((a) => a.published && articleModules[`../../content/articles/${a.slug}.json`])
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 

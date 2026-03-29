@@ -1,37 +1,44 @@
 [
   {
-    "slug": "menulis-efektif-di-era-digital",
-    "title": "Menulis Efektif di Era Digital: Tips untuk Penulis Modern",
-    "subtitle": "Bagaimana cara menulis artikel yang menarik, mudah dibaca, dan berdampak di tengah lautan konten digital.",
+    "slug": "siapa-yang-berhak-disebut-orang-baik",
+    "title": "Siapa yang Berhak Disebut Orang Baik?",
+    "subtitle": "Kita semua ingin menjadi orang baik. Tapi sudahkah kita bertanya — siapa yang berhak mendefinisikan \"baik\" itu sendiri?",
     "tags": [
-      "menulis",
-      "produktivitas"
+      "refleksi diri"
     ],
-    "createdAt": "2026-03-20T14:00:00Z",
+    "createdAt": "2026-03-27T06:28:36.901Z",
+    "published": false
+  },
+  {
+    "slug": "ramadhan-itu-bukan-soal-puasa",
+    "title": "Ramadhan Itu Bukan Soal Puasa",
+    "subtitle": "Ketika mendengar kata Ramadhan, yang pertama muncul di benak kita hampir selalu: puasa. Tapi ketika Allah sendiri memperkenalkan Ramadhan, bukan itu yang Dia sebutkan.",
+    "tags": [
+      "refleksi diri",
+      "ramadhan",
+      "qur’an"
+    ],
+    "createdAt": "2026-03-27T01:50:19.671Z",
     "published": true
   },
   {
-    "slug": "membangun-blog-dengan-github-pages",
-    "title": "Membangun Blog dengan GitHub Pages: Hosting Gratis untuk Developer",
-    "subtitle": "Panduan lengkap cara kerja GitHub Pages dan kenapa ini jadi pilihan terbaik untuk hosting blog statis.",
+    "slug": "bekerja-bukan-untuk-rezeki-lalu-untuk-apa",
+    "title": "Bekerja Bukan untuk Rezeki — Lalu untuk Apa?",
+    "subtitle": "Kita selalu diajarkan bahwa bekerja adalah cara mencari rezeki. Tapi bagaimana kalau Al-Qur’an menyebut alasan lain yang jauh lebih dalam?",
     "tags": [
-      "webdev",
-      "github",
-      "tutorial"
+      "refleksi diri"
     ],
-    "createdAt": "2026-03-15T10:30:00Z",
-    "published": true
+    "createdAt": "2026-03-27T01:25:49.495Z",
+    "published": false
   },
   {
-    "slug": "mengenal-astro-framework",
-    "title": "Mengenal Astro Framework: Masa Depan Web yang Lebih Cepat",
-    "subtitle": "Apa itu Astro, apa kelebihannya, dan kenapa framework ini sangat cocok untuk membangun blog modern.",
+    "slug": "sabar-itu-bukan-diam-ia-butuh-ilmu",
+    "title": "Sabar Itu Bukan Diam — Ia Butuh Ilmu",
+    "subtitle": "Kita sering mengira sabar adalah menahan diri. Tapi bagaimana kalau sebenarnya, sabar yang sesungguhnya justru tidak bisa hadir tanpa pengetahuan?",
     "tags": [
-      "webdev",
-      "astro",
-      "tutorial"
+      "refleksi diri"
     ],
-    "createdAt": "2026-03-10T08:00:00Z",
+    "createdAt": "2026-03-24T01:17:32.656Z",
     "published": true
   }
 ]

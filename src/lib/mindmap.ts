@@ -45,9 +45,11 @@ export function getMindMapData(baseUrl: string): MindMapData {
   }
 
   // Build manual edges (bidirectional, deduplicated)
+  const slugSet = new Set(articles.map((a) => a.slug));
   const manualEdgeKeys = new Set<string>();
   for (const article of articles) {
     for (const relatedSlug of article.relatedSlugs) {
+      if (!slugSet.has(relatedSlug)) continue;
       const key = [article.slug, relatedSlug].sort().join(":::");
       if (!manualEdgeKeys.has(key)) {
         manualEdgeKeys.add(key);

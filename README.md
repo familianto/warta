@@ -350,7 +350,7 @@ warta/
 │   ├── lib/                # Utility (articles.ts, mindmap.ts)
 │   ├── pages/              # Halaman Astro
 │   │   ├── artikel/        # Halaman artikel dinamis
-│   │   ├── kelola-w8x6m/   # Admin panel
+│   │   ├── kelola-a1b2c3/  # Admin panel; dan penamaan bisa disesuaikan
 │   │   ├── index.astro     # Homepage
 │   │   ├── peta.astro      # Mind map
 │   │   └── tentang.astro   # Halaman tentang
